@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+enum AttendanceType {
+  QR_CODE
+  MANUAL
+}
+
+enum AttendanceStatus {
+  PRESENT
+  LATE
+  HALF_DAY
+}
+
+enum LeaveType {
+  ANNUAL
+  SICK
+  MATERNITY
+  UNPAID
+  OTHER
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model User {
+  id         String   @id @default(cuid())
+  firstName  String
+  lastName   String
+  email      String   @unique
+  password   String
+  role       Role     @default(EMPLOYEE)
+  department String?
+  position   String?
+  phone      String?
+  isActive            Boolean   @default(true)
+  passwordResetToken  String?   @unique
+  passwordResetExpiry DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  attendances Attendance[]
+  leaves      Leave[]
+  qrCode      QrCode?
+
+  @@map("users")
+}
+
+model QrCode {
+  id        String   @id @default(cuid())
+  token     String   @unique @default(cuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("qr_codes")
+}
+
+model Attendance {
+  id        String           @id @default(cuid())
+  userId    String
+  date      DateTime         @db.Date
+  checkIn   DateTime
+  checkOut  DateTime?
+  type      AttendanceType
+  status    AttendanceStatus @default(PRESENT)
+  note      String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("attendances")
+}
+
+model Leave {
+  id         String      @id @default(cuid())
+  userId     String
+  type       LeaveType
+  status     LeaveStatus @default(PENDING)
+  startDate  DateTime    @db.Date
+  endDate    DateTime    @db.Date
+  reason     String
+  reviewerId String?
+  reviewedAt DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("leaves")
+}
+
+model TokenBlacklist {
+  id        String   @id @default(cuid())
+  jti       String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
+  @@map("token_blacklist")
+}

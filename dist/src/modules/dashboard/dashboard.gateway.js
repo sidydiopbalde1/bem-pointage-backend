@@ -1,0 +1,58 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DashboardGateway = void 0;
+const websockets_1 = require("@nestjs/websockets");
+const socket_io_1 = require("socket.io");
+const jwt_1 = require("@nestjs/jwt");
+let DashboardGateway = class DashboardGateway {
+    jwtService;
+    server;
+    constructor(jwtService) {
+        this.jwtService = jwtService;
+    }
+    async handleConnection(client) {
+        try {
+            const token = client.handshake.auth.token;
+            const payload = this.jwtService.verify(token);
+            if (!['ADMIN', 'MANAGER'].includes(payload.role)) {
+                client.disconnect();
+                return;
+            }
+            await client.join('dashboard-room');
+        }
+        catch {
+            client.disconnect();
+        }
+    }
+    handleDisconnect(client) {
+        client.leave('dashboard-room');
+    }
+    emitAttendanceUpdate(attendance) {
+        this.server.to('dashboard-room').emit('attendance:update', attendance);
+    }
+    emitDailyStats(stats) {
+        this.server.to('dashboard-room').emit('stats:update', stats);
+    }
+};
+exports.DashboardGateway = DashboardGateway;
+__decorate([
+    (0, websockets_1.WebSocketServer)(),
+    __metadata("design:type", socket_io_1.Server)
+], DashboardGateway.prototype, "server", void 0);
+exports.DashboardGateway = DashboardGateway = __decorate([
+    (0, websockets_1.WebSocketGateway)({
+        cors: { origin: process.env.FRONTEND_URL, credentials: true },
+        namespace: 'dashboard',
+    }),
+    __metadata("design:paramtypes", [jwt_1.JwtService])
+], DashboardGateway);
+//# sourceMappingURL=dashboard.gateway.js.map
