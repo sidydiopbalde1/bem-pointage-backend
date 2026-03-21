@@ -55,7 +55,12 @@ function parseDuration(duration) {
         return 24 * 60 * 60 * 1000;
     const value = parseInt(match[1]);
     const unit = match[2];
-    const multipliers = { s: 1000, m: 60000, h: 3600000, d: 86400000 };
+    const multipliers = {
+        s: 1000,
+        m: 60000,
+        h: 3600000,
+        d: 86400000,
+    };
     return value * multipliers[unit];
 }
 let AuthService = class AuthService {
@@ -68,7 +73,9 @@ let AuthService = class AuthService {
         this.config = config;
     }
     async login(dto) {
-        const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+        const user = await this.prisma.user.findUnique({
+            where: { email: dto.email },
+        });
         if (!user)
             throw new common_1.UnauthorizedException('Identifiants invalides');
         if (!user.isActive) {
@@ -110,7 +117,9 @@ let AuthService = class AuthService {
                 passwordResetExpiry: null,
             },
         });
-        return { message: 'Mot de passe défini avec succès. Vous pouvez maintenant vous connecter.' };
+        return {
+            message: 'Mot de passe défini avec succès. Vous pouvez maintenant vous connecter.',
+        };
     }
     async logout(jti) {
         const expiresIn = this.config.get('JWT_EXPIRES_IN') ?? '1d';

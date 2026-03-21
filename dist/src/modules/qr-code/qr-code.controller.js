@@ -57,7 +57,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QrCodeController.prototype, "regenerateMine", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'QR code d\'un utilisateur (ADMIN)' }),
+    (0, swagger_1.ApiOperation)({ summary: "QR code d'un utilisateur (ADMIN)" }),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(client_1.Role.ADMIN),
     (0, common_1.Get)(':userId'),
@@ -67,7 +67,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QrCodeController.prototype, "getForUser", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Regénérer le QR code d\'un utilisateur (ADMIN)' }),
+    (0, swagger_1.ApiOperation)({ summary: "Regénérer le QR code d'un utilisateur (ADMIN)" }),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(client_1.Role.ADMIN),
     (0, common_1.Patch)(':userId/regenerate'),

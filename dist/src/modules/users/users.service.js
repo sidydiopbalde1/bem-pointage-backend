@@ -68,7 +68,9 @@ let UsersService = class UsersService {
         this.mailService = mailService;
     }
     async create(dto) {
-        const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
+        const existing = await this.prisma.user.findUnique({
+            where: { email: dto.email },
+        });
         if (existing)
             throw new common_1.ConflictException('Email déjà utilisé');
         const tempPassword = await bcrypt.hash((0, crypto_1.randomBytes)(16).toString('hex'), 10);

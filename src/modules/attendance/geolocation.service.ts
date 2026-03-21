@@ -10,7 +10,10 @@ export class GeolocationService {
   constructor(private readonly config: ConfigService) {
     this.officeLat = parseFloat(this.config.get('OFFICE_LATITUDE') ?? '0');
     this.officeLng = parseFloat(this.config.get('OFFICE_LONGITUDE') ?? '0');
-    this.radiusMeters = parseInt(this.config.get('OFFICE_RADIUS_METERS') ?? '100', 10);
+    this.radiusMeters = parseInt(
+      this.config.get('OFFICE_RADIUS_METERS') ?? '100',
+      10,
+    );
   }
 
   /**
@@ -35,7 +38,12 @@ export class GeolocationService {
   /**
    * Formule de Haversine — distance en mètres entre deux coordonnées GPS.
    */
-  private haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  private haversineDistance(
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number,
+  ): number {
     const R = 6371000; // Rayon de la Terre en mètres
     const toRad = (deg: number) => (deg * Math.PI) / 180;
 

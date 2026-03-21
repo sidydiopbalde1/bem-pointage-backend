@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { LeaveStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateLeaveDto, ReviewLeaveDto } from './dto/leave.dto';
@@ -9,7 +13,9 @@ export class LeaveService {
 
   async create(userId: string, dto: CreateLeaveDto) {
     if (new Date(dto.startDate) > new Date(dto.endDate)) {
-      throw new BadRequestException('La date de début doit être avant la date de fin');
+      throw new BadRequestException(
+        'La date de début doit être avant la date de fin',
+      );
     }
 
     return this.prisma.leave.create({
@@ -40,7 +46,9 @@ export class LeaveService {
   }
 
   async review(leaveId: string, reviewerId: string, dto: ReviewLeaveDto) {
-    const leave = await this.prisma.leave.findUnique({ where: { id: leaveId } });
+    const leave = await this.prisma.leave.findUnique({
+      where: { id: leaveId },
+    });
 
     if (!leave) throw new NotFoundException('Demande introuvable');
     if (leave.status !== LeaveStatus.PENDING) {
@@ -55,11 +63,15 @@ export class LeaveService {
   }
 
   async cancel(leaveId: string, userId: string) {
-    const leave = await this.prisma.leave.findFirst({ where: { id: leaveId, userId } });
+    const leave = await this.prisma.leave.findFirst({
+      where: { id: leaveId, userId },
+    });
 
     if (!leave) throw new NotFoundException('Demande introuvable');
     if (leave.status !== LeaveStatus.PENDING) {
-      throw new BadRequestException('Seules les demandes en attente peuvent être annulées');
+      throw new BadRequestException(
+        'Seules les demandes en attente peuvent être annulées',
+      );
     }
 
     return this.prisma.leave.update({

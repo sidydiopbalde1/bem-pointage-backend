@@ -10,7 +10,9 @@ export class MailService {
   private readonly from: string;
 
   constructor(private readonly config: ConfigService) {
-    this.from = this.config.get<string>('MAIL_FROM') ?? 'Pointage App <noreply@pointage.com>';
+    this.from =
+      this.config.get<string>('MAIL_FROM') ??
+      'Pointage App <noreply@pointage.com>';
 
     this.transporter = nodemailer.createTransport({
       host: this.config.get<string>('MAIL_HOST'),
@@ -107,10 +109,13 @@ export class MailService {
       status: string;
     }>;
   }) {
-    const monthName = new Date(opts.year, opts.month - 1).toLocaleString('fr-FR', {
-      month: 'long',
-      year: 'numeric',
-    });
+    const monthName = new Date(opts.year, opts.month - 1).toLocaleString(
+      'fr-FR',
+      {
+        month: 'long',
+        year: 'numeric',
+      },
+    );
 
     const rows = opts.attendances
       .map((a) => {
@@ -119,7 +124,10 @@ export class MailService {
           minute: '2-digit',
         });
         const checkOut = a.checkOut
-          ? a.checkOut.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+          ? a.checkOut.toLocaleTimeString('fr-FR', {
+              hour: '2-digit',
+              minute: '2-digit',
+            })
           : '—';
         const statusColor = a.status === 'PRESENT' ? '#16a34a' : '#dc2626';
         const statusLabel = a.status === 'PRESENT' ? 'Présent' : 'Retard';
@@ -189,7 +197,9 @@ export class MailService {
     try {
       await this.transporter.sendMail({ from: this.from, ...opts });
     } catch (error) {
-      this.logger.error(`Failed to send email to ${opts.to}: ${(error as Error).message}`);
+      this.logger.error(
+        `Failed to send email to ${opts.to}: ${(error as Error).message}`,
+      );
     }
   }
 }

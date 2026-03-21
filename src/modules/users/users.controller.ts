@@ -1,5 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
@@ -29,7 +44,7 @@ export class UsersController {
     return this.usersService.findAll(department);
   }
 
-  @ApiOperation({ summary: 'Détail d\'un utilisateur (ADMIN, MANAGER)' })
+  @ApiOperation({ summary: "Détail d'un utilisateur (ADMIN, MANAGER)" })
   @Roles(Role.ADMIN, Role.MANAGER)
   @Get(':id')
   findOne(@Param('id') id: string) {

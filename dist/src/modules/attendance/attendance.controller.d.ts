@@ -24,7 +24,6 @@ export declare class AttendanceController {
         checkOut: Date | null;
         status: import("@prisma/client").$Enums.AttendanceStatus;
     }>;
-    x: any;
     checkOut(user: {
         id: string;
     }): Promise<{

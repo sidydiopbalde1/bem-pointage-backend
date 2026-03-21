@@ -28,7 +28,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       const blacklisted = await this.prisma.tokenBlacklist.findUnique({
         where: { jti: payload.jti },
       });
-      if (blacklisted) throw new UnauthorizedException('Token révoqué. Veuillez vous reconnecter.');
+      if (blacklisted)
+        throw new UnauthorizedException(
+          'Token révoqué. Veuillez vous reconnecter.',
+        );
     }
 
     const user = await this.prisma.user.findUnique({

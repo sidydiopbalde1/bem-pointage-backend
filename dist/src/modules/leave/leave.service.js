@@ -48,7 +48,9 @@ let LeaveService = class LeaveService {
         });
     }
     async review(leaveId, reviewerId, dto) {
-        const leave = await this.prisma.leave.findUnique({ where: { id: leaveId } });
+        const leave = await this.prisma.leave.findUnique({
+            where: { id: leaveId },
+        });
         if (!leave)
             throw new common_1.NotFoundException('Demande introuvable');
         if (leave.status !== client_1.LeaveStatus.PENDING) {
@@ -61,7 +63,9 @@ let LeaveService = class LeaveService {
         });
     }
     async cancel(leaveId, userId) {
-        const leave = await this.prisma.leave.findFirst({ where: { id: leaveId, userId } });
+        const leave = await this.prisma.leave.findFirst({
+            where: { id: leaveId, userId },
+        });
         if (!leave)
             throw new common_1.NotFoundException('Demande introuvable');
         if (leave.status !== client_1.LeaveStatus.PENDING) {

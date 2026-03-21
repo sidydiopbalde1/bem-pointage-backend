@@ -41,6 +41,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
+COPY prisma.config.ts ./
 
 # Install production dependencies only
 RUN npm ci --only=production && \

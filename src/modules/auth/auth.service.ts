@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
@@ -11,7 +15,12 @@ function parseDuration(duration: string): number {
   if (!match) return 24 * 60 * 60 * 1000; // défaut: 1 jour
   const value = parseInt(match[1]);
   const unit = match[2];
-  const multipliers: Record<string, number> = { s: 1000, m: 60000, h: 3600000, d: 86400000 };
+  const multipliers: Record<string, number> = {
+    s: 1000,
+    m: 60000,
+    h: 3600000,
+    d: 86400000,
+  };
   return value * multipliers[unit];
 }
 
@@ -24,7 +33,9 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
 
     if (!user) throw new UnauthorizedException('Identifiants invalides');
 
@@ -35,7 +46,8 @@ export class AuthService {
     }
 
     const passwordMatch = await bcrypt.compare(dto.password, user.password);
-    if (!passwordMatch) throw new UnauthorizedException('Identifiants invalides');
+    if (!passwordMatch)
+      throw new UnauthorizedException('Identifiants invalides');
 
     const jti = randomUUID();
     const payload = { sub: user.id, email: user.email, role: user.role, jti };
@@ -61,7 +73,9 @@ export class AuthService {
     if (!user) throw new BadRequestException('Token invalide ou expiré');
 
     if (user.passwordResetExpiry && user.passwordResetExpiry < new Date()) {
-      throw new BadRequestException('Token expiré. Contactez un administrateur.');
+      throw new BadRequestException(
+        'Token expiré. Contactez un administrateur.',
+      );
     }
 
     const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
@@ -76,7 +90,10 @@ export class AuthService {
       },
     });
 
-    return { message: 'Mot de passe défini avec succès. Vous pouvez maintenant vous connecter.' };
+    return {
+      message:
+        'Mot de passe défini avec succès. Vous pouvez maintenant vous connecter.',
+    };
   }
 
   async logout(jti: string) {

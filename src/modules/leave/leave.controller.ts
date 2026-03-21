@@ -1,5 +1,19 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import type { LeaveStatus, Role } from '@prisma/client';
 import { LeaveService } from './leave.service';
 import { CreateLeaveDto, ReviewLeaveDto } from './dto/leave.dto';
@@ -34,7 +48,11 @@ export class LeaveController {
   }
 
   @ApiOperation({ summary: 'Lister toutes les demandes (ADMIN, MANAGER)' })
-  @ApiQuery({ name: 'status', required: false, enum: ['PENDING', 'APPROVED', 'REJECTED', 'CANCELLED'] })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['PENDING', 'APPROVED', 'REJECTED', 'CANCELLED'],
+  })
   @UseGuards(RolesGuard)
   @Roles('ADMIN' as Role, 'MANAGER' as Role)
   @Get()
@@ -42,7 +60,9 @@ export class LeaveController {
     return this.leaveService.findAll(undefined, status);
   }
 
-  @ApiOperation({ summary: 'Approuver ou rejeter une demande (ADMIN, MANAGER)' })
+  @ApiOperation({
+    summary: 'Approuver ou rejeter une demande (ADMIN, MANAGER)',
+  })
   @UseGuards(RolesGuard)
   @Roles('ADMIN' as Role, 'MANAGER' as Role)
   @Patch(':id/review')

@@ -15,11 +15,21 @@ export class ReportsService {
   async generateAttendanceExcel(filter: ReportFilter): Promise<Buffer> {
     const attendances = await this.prisma.attendance.findMany({
       where: {
-        date: { gte: new Date(filter.startDate), lte: new Date(filter.endDate) },
+        date: {
+          gte: new Date(filter.startDate),
+          lte: new Date(filter.endDate),
+        },
         ...(filter.department && { user: { department: filter.department } }),
       },
       include: {
-        user: { select: { firstName: true, lastName: true, department: true, position: true } },
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            department: true,
+            position: true,
+          },
+        },
       },
       orderBy: [{ date: 'asc' }, { user: { lastName: 'asc' } }],
     });
@@ -48,7 +58,10 @@ export class ReportsService {
 
     const formatTime = (date: Date | null) =>
       date
-        ? new Date(date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+        ? new Date(date).toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit',
+          })
         : '-';
 
     attendances.forEach((a) => {
@@ -58,7 +71,7 @@ export class ReportsService {
         firstName: a.user.firstName,
         department: a.user.department ?? '-',
         position: a.user.position ?? '-',
-        checkIn: formatTime(a.checkIn),
+        checkIn: formatTime(a.checkIn as Date | null),
         checkOut: formatTime(a.checkOut),
         status: a.status,
         type: a.type,
@@ -66,7 +79,7 @@ export class ReportsService {
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
-    return Buffer.from(buffer);
+    return Buffer.from(buffer as ArrayBuffer);
   }
 
   async getMonthlyStats(year: number, month: number) {
@@ -87,8 +100,10 @@ export class ReportsService {
 
     return users.map((user) => {
       const userAttendances = attendances.filter((a) => a.userId === user.id);
-      const present = userAttendances.find((a) => a.status === 'PRESENT')?._count ?? 0;
-      const late = userAttendances.find((a) => a.status === 'LATE')?._count ?? 0;
+      const present =
+        userAttendances.find((a) => a.status === 'PRESENT')?._count ?? 0;
+      const late =
+        userAttendances.find((a) => a.status === 'LATE')?._count ?? 0;
 
       return { user, present, late, totalDays: present + late };
     });

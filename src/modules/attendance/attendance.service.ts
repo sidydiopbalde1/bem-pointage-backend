@@ -1,11 +1,19 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AttendanceStatus, AttendanceType } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { QrCodeService } from '../qr-code/qr-code.service';
 import { DashboardGateway } from '../dashboard/dashboard.gateway';
 import { MailService } from '../mail/mail.service';
 import { GeolocationService } from './geolocation.service';
-import { CheckInDto, ManualAttendanceDto, AttendanceFilterDto } from './dto/attendance.dto';
+import {
+  CheckInDto,
+  ManualAttendanceDto,
+  AttendanceFilterDto,
+} from './dto/attendance.dto';
 
 const LATE_THRESHOLD_HOUR = 9;
 
@@ -44,14 +52,22 @@ export class AttendanceService {
     const existing = await this.prisma.attendance.findUnique({
       where: { userId_date: { userId, date } },
     });
-    if (existing) throw new BadRequestException("Pointage déjà effectué aujourd'hui");
+    if (existing)
+      throw new BadRequestException("Pointage déjà effectué aujourd'hui");
 
     const status = this.computeStatus(now);
 
     const attendance = await this.prisma.attendance.create({
       data: { userId, date, checkIn: now, type, status, note },
       include: {
-        user: { select: { firstName: true, lastName: true, email: true, department: true } },
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            department: true,
+          },
+        },
       },
     });
 
@@ -61,7 +77,9 @@ export class AttendanceService {
     if (status === AttendanceStatus.LATE) {
       const lateThreshold = new Date(now);
       lateThreshold.setHours(LATE_THRESHOLD_HOUR, 0, 0, 0);
-      const minutesLate = Math.round((now.getTime() - lateThreshold.getTime()) / 60000);
+      const minutesLate = Math.round(
+        (now.getTime() - lateThreshold.getTime()) / 60000,
+      );
 
       this.mailService
         .sendLateNotification({
@@ -83,8 +101,12 @@ export class AttendanceService {
       where: { userId_date: { userId, date } },
     });
 
-    if (!attendance) throw new NotFoundException("Aucun pointage d'entrée trouvé pour aujourd'hui");
-    if (attendance.checkOut) throw new BadRequestException('Sortie déjà enregistrée');
+    if (!attendance)
+      throw new NotFoundException(
+        "Aucun pointage d'entrée trouvé pour aujourd'hui",
+      );
+    if (attendance.checkOut)
+      throw new BadRequestException('Sortie déjà enregistrée');
 
     const updated = await this.prisma.attendance.update({
       where: { id: attendance.id },
@@ -111,7 +133,9 @@ export class AttendanceService {
   }
 
   async createManual(dto: ManualAttendanceDto) {
-    const user = await this.prisma.user.findUnique({ where: { id: dto.userId } });
+    const user = await this.prisma.user.findUnique({
+      where: { id: dto.userId },
+    });
     if (!user) throw new NotFoundException('Employé introuvable');
 
     const date = new Date(dto.date);
@@ -152,11 +176,20 @@ export class AttendanceService {
       where: {
         ...(userId && { userId }),
         ...(startDate &&
-          endDate && { date: { gte: new Date(startDate), lte: new Date(endDate) } }),
+          endDate && {
+            date: { gte: new Date(startDate), lte: new Date(endDate) },
+          }),
         ...(department && { user: { department } }),
       },
       include: {
-        user: { select: { firstName: true, lastName: true, department: true, position: true } },
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            department: true,
+            position: true,
+          },
+        },
       },
       orderBy: { date: 'desc' },
     });
@@ -166,10 +199,20 @@ export class AttendanceService {
     const date = this.todayDate();
     const [total, present, late] = await Promise.all([
       this.prisma.user.count({ where: { isActive: true } }),
-      this.prisma.attendance.count({ where: { date, status: AttendanceStatus.PRESENT } }),
-      this.prisma.attendance.count({ where: { date, status: AttendanceStatus.LATE } }),
+      this.prisma.attendance.count({
+        where: { date, status: AttendanceStatus.PRESENT },
+      }),
+      this.prisma.attendance.count({
+        where: { date, status: AttendanceStatus.LATE },
+      }),
     ]);
 
-    return { total, present: present + late, late, absent: total - (present + late), date };
+    return {
+      total,
+      present: present + late,
+      late,
+      absent: total - (present + late),
+      date,
+    };
   }
 }

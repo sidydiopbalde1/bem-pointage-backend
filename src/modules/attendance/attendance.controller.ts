@@ -1,8 +1,20 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { AttendanceService } from './attendance.service';
-import { CheckInDto, ManualAttendanceDto, AttendanceFilterDto } from './dto/attendance.dto';
+import {
+  CheckInDto,
+  ManualAttendanceDto,
+  AttendanceFilterDto,
+} from './dto/attendance.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -15,11 +27,11 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
-  @ApiOperation({ summary: 'Pointer l\'arrivée' })
+  @ApiOperation({ summary: "Pointer l'arrivée" })
   @Post('check-in')
   checkIn(@CurrentUser() user: { id: string }, @Body() dto: CheckInDto) {
     return this.attendanceService.checkIn(user.id, dto);
-  }x
+  }
 
   @ApiOperation({ summary: 'Pointer la sortie' })
   @Post('check-out')

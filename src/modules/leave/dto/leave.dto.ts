@@ -2,7 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import type { LeaveType } from '@prisma/client';
 import { IsDateString, IsEnum, IsString } from 'class-validator';
 
-const ReviewableLeaveStatus = { APPROVED: 'APPROVED', REJECTED: 'REJECTED' } as const;
+const ReviewableLeaveStatus = {
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+} as const;
 
 export class CreateLeaveDto {
   @ApiProperty({ enum: ['ANNUAL', 'SICK', 'MATERNITY', 'UNPAID', 'OTHER'] })

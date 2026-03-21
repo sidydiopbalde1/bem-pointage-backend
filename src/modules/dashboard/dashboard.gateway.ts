@@ -11,7 +11,9 @@ import { JwtService } from '@nestjs/jwt';
   cors: { origin: process.env.FRONTEND_URL, credentials: true },
   namespace: 'dashboard',
 })
-export class DashboardGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class DashboardGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
 
@@ -20,7 +22,7 @@ export class DashboardGateway implements OnGatewayConnection, OnGatewayDisconnec
   async handleConnection(client: Socket): Promise<void> {
     try {
       const token = client.handshake.auth.token as string;
-      const payload = this.jwtService.verify(token);
+      const payload = this.jwtService.verify<{ role: string }>(token);
 
       if (!['ADMIN', 'MANAGER'].includes(payload.role)) {
         client.disconnect();
@@ -34,7 +36,7 @@ export class DashboardGateway implements OnGatewayConnection, OnGatewayDisconnec
   }
 
   handleDisconnect(client: Socket): void {
-    client.leave('dashboard-room');
+    void client.leave('dashboard-room');
   }
 
   emitAttendanceUpdate(attendance: unknown): void {

@@ -54,11 +54,21 @@ let ReportsService = class ReportsService {
     async generateAttendanceExcel(filter) {
         const attendances = await this.prisma.attendance.findMany({
             where: {
-                date: { gte: new Date(filter.startDate), lte: new Date(filter.endDate) },
+                date: {
+                    gte: new Date(filter.startDate),
+                    lte: new Date(filter.endDate),
+                },
                 ...(filter.department && { user: { department: filter.department } }),
             },
             include: {
-                user: { select: { firstName: true, lastName: true, department: true, position: true } },
+                user: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        department: true,
+                        position: true,
+                    },
+                },
             },
             orderBy: [{ date: 'asc' }, { user: { lastName: 'asc' } }],
         });
@@ -82,7 +92,10 @@ let ReportsService = class ReportsService {
             fgColor: { argb: '2563EB' },
         };
         const formatTime = (date) => date
-            ? new Date(date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+            ? new Date(date).toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+            })
             : '-';
         attendances.forEach((a) => {
             sheet.addRow({

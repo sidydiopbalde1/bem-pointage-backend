@@ -63,7 +63,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findAll", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Détail d\'un utilisateur (ADMIN, MANAGER)' }),
+    (0, swagger_1.ApiOperation)({ summary: "Détail d'un utilisateur (ADMIN, MANAGER)" }),
     (0, roles_decorator_1.Roles)(client_1.Role.ADMIN, client_1.Role.MANAGER),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

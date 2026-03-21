@@ -45,7 +45,10 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ enum: ['ADMIN', 'MANAGER', 'EMPLOYEE'], default: 'EMPLOYEE' }),
+    (0, swagger_1.ApiPropertyOptional)({
+        enum: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
+        default: 'EMPLOYEE',
+    }),
     (0, class_validator_1.IsEnum)(['ADMIN', 'MANAGER', 'EMPLOYEE']),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)

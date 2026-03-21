@@ -54,7 +54,9 @@ let MailService = MailService_1 = class MailService {
     from;
     constructor(config) {
         this.config = config;
-        this.from = this.config.get('MAIL_FROM') ?? 'Pointage App <noreply@pointage.com>';
+        this.from =
+            this.config.get('MAIL_FROM') ??
+                'Pointage App <noreply@pointage.com>';
         this.transporter = nodemailer.createTransport({
             host: this.config.get('MAIL_HOST'),
             port: this.config.get('MAIL_PORT') ?? 587,
@@ -128,7 +130,10 @@ let MailService = MailService_1 = class MailService {
                 minute: '2-digit',
             });
             const checkOut = a.checkOut
-                ? a.checkOut.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+                ? a.checkOut.toLocaleTimeString('fr-FR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                })
                 : '—';
             const statusColor = a.status === 'PRESENT' ? '#16a34a' : '#dc2626';
             const statusLabel = a.status === 'PRESENT' ? 'Présent' : 'Retard';

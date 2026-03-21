@@ -26,7 +26,9 @@ export class QrCodeService {
     const qrCode = await this.prisma.qrCode.findUnique({
       where: { token },
       include: {
-        user: { select: { id: true, firstName: true, lastName: true, isActive: true } },
+        user: {
+          select: { id: true, firstName: true, lastName: true, isActive: true },
+        },
       },
     });
 

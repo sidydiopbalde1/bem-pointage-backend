@@ -34,7 +34,7 @@ let DashboardGateway = class DashboardGateway {
         }
     }
     handleDisconnect(client) {
-        client.leave('dashboard-room');
+        void client.leave('dashboard-room');
     }
     emitAttendanceUpdate(attendance) {
         this.server.to('dashboard-room').emit('attendance:update', attendance);

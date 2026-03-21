@@ -73,7 +73,11 @@ __decorate([
 ], LeaveController.prototype, "myStats", null);
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Lister toutes les demandes (ADMIN, MANAGER)' }),
-    (0, swagger_1.ApiQuery)({ name: 'status', required: false, enum: ['PENDING', 'APPROVED', 'REJECTED', 'CANCELLED'] }),
+    (0, swagger_1.ApiQuery)({
+        name: 'status',
+        required: false,
+        enum: ['PENDING', 'APPROVED', 'REJECTED', 'CANCELLED'],
+    }),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN', 'MANAGER'),
     (0, common_1.Get)(),
@@ -83,7 +87,9 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], LeaveController.prototype, "findAll", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Approuver ou rejeter une demande (ADMIN, MANAGER)' }),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Approuver ou rejeter une demande (ADMIN, MANAGER)',
+    }),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN', 'MANAGER'),
     (0, common_1.Patch)(':id/review'),

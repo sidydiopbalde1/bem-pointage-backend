@@ -26,7 +26,7 @@ export class QrCodeController {
     return this.qrCodeService.regenerate(user.id);
   }
 
-  @ApiOperation({ summary: 'QR code d\'un utilisateur (ADMIN)' })
+  @ApiOperation({ summary: "QR code d'un utilisateur (ADMIN)" })
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @Get(':userId')
@@ -34,7 +34,7 @@ export class QrCodeController {
     return this.qrCodeService.generateForUser(userId);
   }
 
-  @ApiOperation({ summary: 'Regénérer le QR code d\'un utilisateur (ADMIN)' })
+  @ApiOperation({ summary: "Regénérer le QR code d'un utilisateur (ADMIN)" })
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @Patch(':userId/regenerate')

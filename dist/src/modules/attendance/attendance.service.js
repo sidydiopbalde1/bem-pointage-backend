@@ -57,7 +57,14 @@ let AttendanceService = class AttendanceService {
         const attendance = await this.prisma.attendance.create({
             data: { userId, date, checkIn: now, type, status, note },
             include: {
-                user: { select: { firstName: true, lastName: true, email: true, department: true } },
+                user: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        department: true,
+                    },
+                },
             },
         });
         this.dashboardGateway.emitAttendanceUpdate(attendance);
@@ -104,7 +111,9 @@ let AttendanceService = class AttendanceService {
         return this.doCheckIn(qrCode.userId, client_1.AttendanceType.QR_CODE);
     }
     async createManual(dto) {
-        const user = await this.prisma.user.findUnique({ where: { id: dto.userId } });
+        const user = await this.prisma.user.findUnique({
+            where: { id: dto.userId },
+        });
         if (!user)
             throw new common_1.NotFoundException('Employé introuvable');
         const date = new Date(dto.date);
@@ -141,11 +150,20 @@ let AttendanceService = class AttendanceService {
             where: {
                 ...(userId && { userId }),
                 ...(startDate &&
-                    endDate && { date: { gte: new Date(startDate), lte: new Date(endDate) } }),
+                    endDate && {
+                    date: { gte: new Date(startDate), lte: new Date(endDate) },
+                }),
                 ...(department && { user: { department } }),
             },
             include: {
-                user: { select: { firstName: true, lastName: true, department: true, position: true } },
+                user: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        department: true,
+                        position: true,
+                    },
+                },
             },
             orderBy: { date: 'desc' },
         });
@@ -154,10 +172,20 @@ let AttendanceService = class AttendanceService {
         const date = this.todayDate();
         const [total, present, late] = await Promise.all([
             this.prisma.user.count({ where: { isActive: true } }),
-            this.prisma.attendance.count({ where: { date, status: client_1.AttendanceStatus.PRESENT } }),
-            this.prisma.attendance.count({ where: { date, status: client_1.AttendanceStatus.LATE } }),
+            this.prisma.attendance.count({
+                where: { date, status: client_1.AttendanceStatus.PRESENT },
+            }),
+            this.prisma.attendance.count({
+                where: { date, status: client_1.AttendanceStatus.LATE },
+            }),
         ]);
-        return { total, present: present + late, late, absent: total - (present + late), date };
+        return {
+            total,
+            present: present + late,
+            late,
+            absent: total - (present + late),
+            date,
+        };
     }
 };
 exports.AttendanceService = AttendanceService;

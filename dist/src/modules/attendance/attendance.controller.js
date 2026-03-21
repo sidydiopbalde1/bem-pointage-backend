@@ -30,7 +30,6 @@ let AttendanceController = class AttendanceController {
     checkIn(user, dto) {
         return this.attendanceService.checkIn(user.id, dto);
     }
-    x;
     checkOut(user) {
         return this.attendanceService.checkOut(user.id);
     }
@@ -52,7 +51,7 @@ let AttendanceController = class AttendanceController {
 };
 exports.AttendanceController = AttendanceController;
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Pointer l\'arrivée' }),
+    (0, swagger_1.ApiOperation)({ summary: "Pointer l'arrivée" }),
     (0, common_1.Post)('check-in'),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Body)()),

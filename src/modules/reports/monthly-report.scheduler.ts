@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 
@@ -41,7 +41,9 @@ export class MonthlyReportScheduler {
           orderBy: { date: 'asc' },
         });
 
-        const present = attendances.filter((a) => a.status === 'PRESENT').length;
+        const present = attendances.filter(
+          (a) => a.status === 'PRESENT',
+        ).length;
         const late = attendances.filter((a) => a.status === 'LATE').length;
         const absent = Math.max(0, workingDays - (present + late));
 
@@ -66,7 +68,9 @@ export class MonthlyReportScheduler {
           })),
         });
       } catch (error) {
-        this.logger.error(`Rapport mensuel échoué pour ${user.email}: ${(error as Error).message}`);
+        this.logger.error(
+          `Rapport mensuel échoué pour ${user.email}: ${(error as Error).message}`,
+        );
       }
     }
 

@@ -1,6 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import type { AttendanceType } from '@prisma/client';
-import { IsDateString, IsEnum, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CheckInDto {
@@ -8,14 +16,14 @@ export class CheckInDto {
   @IsEnum(['QR_CODE', 'MANUAL'])
   type: AttendanceType;
 
-  @ApiProperty({ example: 14.6928, description: 'Latitude GPS de l\'employé' })
+  @ApiProperty({ example: 14.6928, description: "Latitude GPS de l'employé" })
   @IsNumber()
   @Min(-90)
   @Max(90)
   @Type(() => Number)
   latitude: number;
 
-  @ApiProperty({ example: -17.4467, description: 'Longitude GPS de l\'employé' })
+  @ApiProperty({ example: -17.4467, description: "Longitude GPS de l'employé" })
   @IsNumber()
   @Min(-180)
   @Max(180)

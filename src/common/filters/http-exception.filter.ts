@@ -30,10 +30,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
         message = (resp.message as string | string[]) ?? exception.message;
         errors = resp.errors as Record<string, string[]> | undefined;
       } else {
-        message = exceptionResponse as string;
+        message = exceptionResponse;
       }
     } else if (exception instanceof Error) {
-      this.logger.error(`Unhandled exception: ${exception.message}`, exception.stack);
+      this.logger.error(
+        `Unhandled exception: ${exception.message}`,
+        exception.stack,
+      );
     }
 
     const body: Record<string, unknown> = {

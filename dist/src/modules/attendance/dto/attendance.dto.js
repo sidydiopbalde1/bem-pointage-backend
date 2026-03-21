@@ -26,7 +26,7 @@ __decorate([
     __metadata("design:type", String)
 ], CheckInDto.prototype, "type", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 14.6928, description: 'Latitude GPS de l\'employé' }),
+    (0, swagger_1.ApiProperty)({ example: 14.6928, description: "Latitude GPS de l'employé" }),
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(-90),
     (0, class_validator_1.Max)(90),
@@ -34,7 +34,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CheckInDto.prototype, "latitude", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: -17.4467, description: 'Longitude GPS de l\'employé' }),
+    (0, swagger_1.ApiProperty)({ example: -17.4467, description: "Longitude GPS de l'employé" }),
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(-180),
     (0, class_validator_1.Max)(180),
