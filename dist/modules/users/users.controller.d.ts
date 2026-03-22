@@ -17,7 +17,7 @@ export declare class UsersController {
         workEndTime: string;
         createdAt: Date;
     }>;
-    findAll(department?: string): import("@prisma/client").Prisma.PrismaPromise<{
+    findAll(department?: string, includeInactive?: string): import("@prisma/client").Prisma.PrismaPromise<{
         email: string;
         id: string;
         firstName: string;

@@ -99,9 +99,12 @@ let UsersService = class UsersService {
             .catch(() => null);
         return user;
     }
-    findAll(department) {
+    findAll(department, includeInactive = false) {
         return this.prisma.user.findMany({
-            where: { isActive: true, ...(department && { department }) },
+            where: {
+                ...(includeInactive ? {} : { isActive: true }),
+                ...(department && { department }),
+            },
             select: USER_SELECT,
             orderBy: { lastName: 'asc' },
         });

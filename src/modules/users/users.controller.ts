@@ -38,10 +38,14 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Lister les utilisateurs (ADMIN, MANAGER)' })
   @ApiQuery({ name: 'department', required: false })
+  @ApiQuery({ name: 'includeInactive', required: false })
   @Roles(Role.ADMIN, Role.MANAGER)
   @Get()
-  findAll(@Query('department') department?: string) {
-    return this.usersService.findAll(department);
+  findAll(
+    @Query('department') department?: string,
+    @Query('includeInactive') includeInactive?: string,
+  ) {
+    return this.usersService.findAll(department, includeInactive === 'true');
   }
 
   @ApiOperation({ summary: "Détail d'un utilisateur (ADMIN, MANAGER)" })

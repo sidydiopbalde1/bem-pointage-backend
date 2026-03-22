@@ -68,9 +68,12 @@ export class UsersService {
     return user;
   }
 
-  findAll(department?: string) {
+  findAll(department?: string, includeInactive = false) {
     return this.prisma.user.findMany({
-      where: { isActive: true, ...(department && { department }) },
+      where: {
+        ...(includeInactive ? {} : { isActive: true }),
+        ...(department && { department }),
+      },
       select: USER_SELECT,
       orderBy: { lastName: 'asc' },
     });

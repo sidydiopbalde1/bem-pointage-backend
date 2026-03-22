@@ -29,8 +29,8 @@ let UsersController = class UsersController {
     create(dto) {
         return this.usersService.create(dto);
     }
-    findAll(department) {
-        return this.usersService.findAll(department);
+    findAll(department, includeInactive) {
+        return this.usersService.findAll(department, includeInactive === 'true');
     }
     findOne(id) {
         return this.usersService.findOne(id);
@@ -55,11 +55,13 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Lister les utilisateurs (ADMIN, MANAGER)' }),
     (0, swagger_1.ApiQuery)({ name: 'department', required: false }),
+    (0, swagger_1.ApiQuery)({ name: 'includeInactive', required: false }),
     (0, roles_decorator_1.Roles)(client_1.Role.ADMIN, client_1.Role.MANAGER),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('department')),
+    __param(1, (0, common_1.Query)('includeInactive')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findAll", null);
 __decorate([

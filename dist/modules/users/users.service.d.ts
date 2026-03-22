@@ -19,7 +19,7 @@ export declare class UsersService {
         workEndTime: string;
         createdAt: Date;
     }>;
-    findAll(department?: string): import("@prisma/client").Prisma.PrismaPromise<{
+    findAll(department?: string, includeInactive?: boolean): import("@prisma/client").Prisma.PrismaPromise<{
         email: string;
         id: string;
         firstName: string;
