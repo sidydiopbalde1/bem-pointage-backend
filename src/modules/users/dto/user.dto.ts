@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsOptional,
   IsString,
+  Matches,
   MinLength,
 } from 'class-validator';
 import type { Role } from '@prisma/client';
@@ -48,6 +49,22 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   phone?: string;
+
+  @ApiPropertyOptional({ example: '08:00', description: "Heure d'arrivée (HH:MM)" })
+  @IsString()
+  @Matches(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
+    message: "workStartTime doit être au format HH:MM (ex: 08:00)",
+  })
+  @IsOptional()
+  workStartTime?: string;
+
+  @ApiPropertyOptional({ example: '17:00', description: 'Heure de départ (HH:MM)' })
+  @IsString()
+  @Matches(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
+    message: "workEndTime doit être au format HH:MM (ex: 17:00)",
+  })
+  @IsOptional()
+  workEndTime?: string;
 }
 
 export class UpdateUserDto {
@@ -75,4 +92,20 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   position?: string;
+
+  @ApiPropertyOptional({ example: '08:00', description: "Heure d'arrivée (HH:MM)" })
+  @IsString()
+  @Matches(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
+    message: "workStartTime doit être au format HH:MM (ex: 08:00)",
+  })
+  @IsOptional()
+  workStartTime?: string;
+
+  @ApiPropertyOptional({ example: '17:00', description: 'Heure de départ (HH:MM)' })
+  @IsString()
+  @Matches(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
+    message: "workEndTime doit être au format HH:MM (ex: 17:00)",
+  })
+  @IsOptional()
+  workEndTime?: string;
 }

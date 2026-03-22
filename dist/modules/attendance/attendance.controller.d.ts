@@ -11,6 +11,7 @@ export declare class AttendanceController {
             firstName: string;
             lastName: string;
             department: string | null;
+            workStartTime: string;
         };
     } & {
         date: Date;

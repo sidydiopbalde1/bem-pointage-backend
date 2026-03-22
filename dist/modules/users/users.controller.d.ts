@@ -13,6 +13,8 @@ export declare class UsersController {
         position: string | null;
         phone: string | null;
         isActive: boolean;
+        workStartTime: string;
+        workEndTime: string;
         createdAt: Date;
     }>;
     findAll(department?: string): import("@prisma/client").Prisma.PrismaPromise<{
@@ -25,6 +27,8 @@ export declare class UsersController {
         position: string | null;
         phone: string | null;
         isActive: boolean;
+        workStartTime: string;
+        workEndTime: string;
         createdAt: Date;
     }[]>;
     findOne(id: string): Promise<{
@@ -40,6 +44,8 @@ export declare class UsersController {
         position: string | null;
         phone: string | null;
         isActive: boolean;
+        workStartTime: string;
+        workEndTime: string;
         createdAt: Date;
     }>;
     update(id: string, dto: UpdateUserDto): Promise<{
@@ -52,6 +58,8 @@ export declare class UsersController {
         position: string | null;
         phone: string | null;
         isActive: boolean;
+        workStartTime: string;
+        workEndTime: string;
         createdAt: Date;
     }>;
     deactivate(id: string): Promise<{
@@ -64,6 +72,8 @@ export declare class UsersController {
         position: string | null;
         phone: string | null;
         isActive: boolean;
+        workStartTime: string;
+        workEndTime: string;
         createdAt: Date;
     }>;
 }

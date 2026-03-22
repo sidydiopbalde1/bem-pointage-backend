@@ -19,6 +19,8 @@ const USER_SELECT = {
   position: true,
   phone: true,
   isActive: true,
+  workStartTime: true,
+  workEndTime: true,
   createdAt: true,
 };
 

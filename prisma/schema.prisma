@@ -49,6 +49,8 @@ model User {
   position   String?
   phone      String?
   isActive            Boolean   @default(true)
+  workStartTime       String    @default("09:00")
+  workEndTime         String    @default("17:00")
   passwordResetToken  String?   @unique
   passwordResetExpiry DateTime?
   createdAt           DateTime  @default(now())

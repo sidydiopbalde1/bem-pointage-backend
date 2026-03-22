@@ -19,6 +19,7 @@ export declare class AttendanceService {
             firstName: string;
             lastName: string;
             department: string | null;
+            workStartTime: string;
         };
     } & {
         date: Date;

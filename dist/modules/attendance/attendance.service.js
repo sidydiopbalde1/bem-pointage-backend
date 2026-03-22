@@ -17,7 +17,6 @@ const qr_code_service_1 = require("../qr-code/qr-code.service");
 const dashboard_gateway_1 = require("../dashboard/dashboard.gateway");
 const mail_service_1 = require("../mail/mail.service");
 const geolocation_service_1 = require("./geolocation.service");
-const LATE_THRESHOLD_HOUR = 9;
 let AttendanceService = class AttendanceService {
     prisma;
     qrCodeService;
@@ -31,10 +30,11 @@ let AttendanceService = class AttendanceService {
         this.mailService = mailService;
         this.geolocationService = geolocationService;
     }
-    computeStatus(checkInTime) {
-        return checkInTime.getHours() >= LATE_THRESHOLD_HOUR
-            ? client_1.AttendanceStatus.LATE
-            : client_1.AttendanceStatus.PRESENT;
+    computeStatus(checkInTime, workStartTime) {
+        const [hours, minutes] = workStartTime.split(':').map(Number);
+        const threshold = new Date(checkInTime);
+        threshold.setHours(hours, minutes, 0, 0);
+        return checkInTime > threshold ? client_1.AttendanceStatus.LATE : client_1.AttendanceStatus.PRESENT;
     }
     todayDate() {
         const today = new Date();
@@ -53,9 +53,15 @@ let AttendanceService = class AttendanceService {
         });
         if (existing)
             throw new common_1.BadRequestException("Pointage déjà effectué aujourd'hui");
-        const status = this.computeStatus(now);
         const attendance = await this.prisma.attendance.create({
-            data: { userId, date, checkIn: now, type, status, note },
+            data: {
+                userId,
+                date,
+                checkIn: now,
+                type,
+                status: client_1.AttendanceStatus.PRESENT,
+                note,
+            },
             include: {
                 user: {
                     select: {
@@ -63,14 +69,24 @@ let AttendanceService = class AttendanceService {
                         lastName: true,
                         email: true,
                         department: true,
+                        workStartTime: true,
                     },
                 },
             },
         });
+        const status = this.computeStatus(now, attendance.user.workStartTime);
+        if (status === client_1.AttendanceStatus.LATE) {
+            await this.prisma.attendance.update({
+                where: { id: attendance.id },
+                data: { status: client_1.AttendanceStatus.LATE },
+            });
+            attendance.status = client_1.AttendanceStatus.LATE;
+        }
         this.dashboardGateway.emitAttendanceUpdate(attendance);
         if (status === client_1.AttendanceStatus.LATE) {
+            const [hours, minutes] = attendance.user.workStartTime.split(':').map(Number);
             const lateThreshold = new Date(now);
-            lateThreshold.setHours(LATE_THRESHOLD_HOUR, 0, 0, 0);
+            lateThreshold.setHours(hours, minutes, 0, 0);
             const minutesLate = Math.round((now.getTime() - lateThreshold.getTime()) / 60000);
             this.mailService
                 .sendLateNotification({
@@ -113,6 +129,7 @@ let AttendanceService = class AttendanceService {
     async createManual(dto) {
         const user = await this.prisma.user.findUnique({
             where: { id: dto.userId },
+            select: { id: true, workStartTime: true },
         });
         if (!user)
             throw new common_1.NotFoundException('Employé introuvable');
@@ -132,7 +149,7 @@ let AttendanceService = class AttendanceService {
                 checkIn: new Date(dto.checkIn),
                 checkOut: dto.checkOut ? new Date(dto.checkOut) : null,
                 type: client_1.AttendanceType.MANUAL,
-                status: this.computeStatus(new Date(dto.checkIn)),
+                status: this.computeStatus(new Date(dto.checkIn), user.workStartTime),
                 note: dto.note,
             },
             include: { user: { select: { firstName: true, lastName: true } } },

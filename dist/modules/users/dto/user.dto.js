@@ -21,6 +21,8 @@ class CreateUserDto {
     department;
     position;
     phone;
+    workStartTime;
+    workEndTime;
 }
 exports.CreateUserDto = CreateUserDto;
 __decorate([
@@ -71,12 +73,32 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "phone", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '08:00', description: "Heure d'arrivée (HH:MM)" }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
+        message: "workStartTime doit être au format HH:MM (ex: 08:00)",
+    }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "workStartTime", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '17:00', description: 'Heure de départ (HH:MM)' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
+        message: "workEndTime doit être au format HH:MM (ex: 17:00)",
+    }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "workEndTime", void 0);
 class UpdateUserDto {
     firstName;
     lastName;
     role;
     department;
     position;
+    workStartTime;
+    workEndTime;
 }
 exports.UpdateUserDto = UpdateUserDto;
 __decorate([
@@ -109,4 +131,22 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "position", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '08:00', description: "Heure d'arrivée (HH:MM)" }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
+        message: "workStartTime doit être au format HH:MM (ex: 08:00)",
+    }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "workStartTime", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '17:00', description: 'Heure de départ (HH:MM)' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
+        message: "workEndTime doit être au format HH:MM (ex: 17:00)",
+    }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "workEndTime", void 0);
 //# sourceMappingURL=user.dto.js.map

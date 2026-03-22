@@ -8,6 +8,8 @@ export declare class CreateUserDto {
     department?: string;
     position?: string;
     phone?: string;
+    workStartTime?: string;
+    workEndTime?: string;
 }
 export declare class UpdateUserDto {
     firstName?: string;
@@ -15,4 +17,6 @@ export declare class UpdateUserDto {
     role?: Role;
     department?: string;
     position?: string;
+    workStartTime?: string;
+    workEndTime?: string;
 }
