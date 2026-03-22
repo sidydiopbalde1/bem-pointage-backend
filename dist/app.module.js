@@ -19,6 +19,7 @@ const attendance_module_1 = require("./modules/attendance/attendance.module");
 const leave_module_1 = require("./modules/leave/leave.module");
 const dashboard_module_1 = require("./modules/dashboard/dashboard.module");
 const reports_module_1 = require("./modules/reports/reports.module");
+const health_controller_1 = require("./health/health.controller");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -37,6 +38,7 @@ exports.AppModule = AppModule = __decorate([
             dashboard_module_1.DashboardModule,
             reports_module_1.ReportsModule,
         ],
+        controllers: [health_controller_1.HealthController],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

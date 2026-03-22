@@ -184,6 +184,115 @@ export class MailService {
     });
   }
 
+  async sendLeaveRequestToAdmin(opts: {
+    adminEmail: string;
+    employeeFirstName: string;
+    employeeLastName: string;
+    department: string | null;
+    type: string;
+    startDate: Date;
+    endDate: Date;
+    reason: string;
+  }) {
+    const typeLabels: Record<string, string> = {
+      ANNUAL: 'Congé annuel',
+      SICK: 'Congé maladie',
+      MATERNITY: 'Congé maternité',
+      UNPAID: 'Congé sans solde',
+      OTHER: 'Autre',
+    };
+
+    await this.send({
+      to: opts.adminEmail,
+      subject: `Nouvelle demande de congé — ${opts.employeeFirstName} ${opts.employeeLastName}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2563eb;">Nouvelle demande de congé</h2>
+          <p>Une nouvelle demande de congé a été soumise et nécessite votre validation.</p>
+          <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;">
+            <tr style="background-color: #f3f4f6;">
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Employé</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb;">${opts.employeeFirstName} ${opts.employeeLastName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Département</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb;">${opts.department ?? '—'}</td>
+            </tr>
+            <tr style="background-color: #f3f4f6;">
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Type</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb;">${typeLabels[opts.type] ?? opts.type}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Du</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb;">${opts.startDate.toLocaleDateString('fr-FR')}</td>
+            </tr>
+            <tr style="background-color: #f3f4f6;">
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Au</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb;">${opts.endDate.toLocaleDateString('fr-FR')}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Motif</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb;">${opts.reason}</td>
+            </tr>
+          </table>
+          <p style="color: #6b7280; font-size: 13px;">Connectez-vous à la plateforme pour traiter cette demande.</p>
+        </div>
+      `,
+    });
+  }
+
+  async sendLeaveReviewToEmployee(opts: {
+    to: string;
+    firstName: string;
+    type: string;
+    startDate: Date;
+    endDate: Date;
+    status: 'APPROVED' | 'REJECTED';
+  }) {
+    const typeLabels: Record<string, string> = {
+      ANNUAL: 'Congé annuel',
+      SICK: 'Congé maladie',
+      MATERNITY: 'Congé maternité',
+      UNPAID: 'Congé sans solde',
+      OTHER: 'Autre',
+    };
+
+    const approved = opts.status === 'APPROVED';
+    const statusLabel = approved ? 'Approuvée' : 'Refusée';
+    const color = approved ? '#16a34a' : '#dc2626';
+
+    await this.send({
+      to: opts.to,
+      subject: `Demande de congé ${statusLabel.toLowerCase()} — ${opts.startDate.toLocaleDateString('fr-FR')}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: ${color};">Demande de congé ${statusLabel}</h2>
+          <p>Bonjour ${opts.firstName},</p>
+          <p>Votre demande de congé a été <strong style="color: ${color};">${statusLabel.toLowerCase()}</strong>.</p>
+          <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;">
+            <tr style="background-color: #f3f4f6;">
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Type</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb;">${typeLabels[opts.type] ?? opts.type}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Du</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb;">${opts.startDate.toLocaleDateString('fr-FR')}</td>
+            </tr>
+            <tr style="background-color: #f3f4f6;">
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Au</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb;">${opts.endDate.toLocaleDateString('fr-FR')}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">Statut</td>
+              <td style="padding: 10px; border: 1px solid #e5e7eb; color: ${color}; font-weight: bold;">${statusLabel}</td>
+            </tr>
+          </table>
+          <p style="color: #6b7280; font-size: 13px;">Connectez-vous à la plateforme pour consulter le détail.</p>
+        </div>
+      `,
+    });
+  }
+
   private statCard(label: string, value: string, color: string): string {
     return `
       <div style="background: #f9fafb; border-left: 4px solid ${color};

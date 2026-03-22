@@ -3,13 +3,17 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { LeaveStatus } from '@prisma/client';
+import { LeaveStatus, Role } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import { CreateLeaveDto, ReviewLeaveDto } from './dto/leave.dto';
 
 @Injectable()
 export class LeaveService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mail: MailService,
+  ) {}
 
   async create(userId: string, dto: CreateLeaveDto) {
     if (new Date(dto.startDate) > new Date(dto.endDate)) {
@@ -18,7 +22,7 @@ export class LeaveService {
       );
     }
 
-    return this.prisma.leave.create({
+    const leave = await this.prisma.leave.create({
       data: {
         userId,
         type: dto.type,
@@ -30,6 +34,29 @@ export class LeaveService {
         user: { select: { firstName: true, lastName: true, department: true } },
       },
     });
+
+    // Notifier les admins
+    const admins = await this.prisma.user.findMany({
+      where: { role: Role.ADMIN, isActive: true },
+      select: { email: true },
+    });
+
+    await Promise.all(
+      admins.map((admin) =>
+        this.mail.sendLeaveRequestToAdmin({
+          adminEmail: admin.email,
+          employeeFirstName: leave.user.firstName,
+          employeeLastName: leave.user.lastName,
+          department: leave.user.department,
+          type: leave.type,
+          startDate: leave.startDate,
+          endDate: leave.endDate,
+          reason: leave.reason,
+        }),
+      ),
+    );
+
+    return leave;
   }
 
   findAll(userId?: string, status?: LeaveStatus) {
@@ -55,11 +82,24 @@ export class LeaveService {
       throw new BadRequestException('Cette demande a déjà été traitée');
     }
 
-    return this.prisma.leave.update({
+    const updated = await this.prisma.leave.update({
       where: { id: leaveId },
       data: { status: dto.status, reviewerId, reviewedAt: new Date() },
-      include: { user: { select: { firstName: true, lastName: true } } },
+      include: {
+        user: { select: { firstName: true, lastName: true, email: true } },
+      },
     });
+
+    await this.mail.sendLeaveReviewToEmployee({
+      to: updated.user.email,
+      firstName: updated.user.firstName,
+      type: updated.type,
+      startDate: updated.startDate,
+      endDate: updated.endDate,
+      status: updated.status as 'APPROVED' | 'REJECTED',
+    });
+
+    return updated;
   }
 
   async cancel(leaveId: string, userId: string) {

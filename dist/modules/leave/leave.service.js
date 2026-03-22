@@ -13,16 +13,19 @@ exports.LeaveService = void 0;
 const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../../prisma/prisma.service");
+const mail_service_1 = require("../mail/mail.service");
 let LeaveService = class LeaveService {
     prisma;
-    constructor(prisma) {
+    mail;
+    constructor(prisma, mail) {
         this.prisma = prisma;
+        this.mail = mail;
     }
     async create(userId, dto) {
         if (new Date(dto.startDate) > new Date(dto.endDate)) {
             throw new common_1.BadRequestException('La date de début doit être avant la date de fin');
         }
-        return this.prisma.leave.create({
+        const leave = await this.prisma.leave.create({
             data: {
                 userId,
                 type: dto.type,
@@ -34,6 +37,21 @@ let LeaveService = class LeaveService {
                 user: { select: { firstName: true, lastName: true, department: true } },
             },
         });
+        const admins = await this.prisma.user.findMany({
+            where: { role: client_1.Role.ADMIN, isActive: true },
+            select: { email: true },
+        });
+        await Promise.all(admins.map((admin) => this.mail.sendLeaveRequestToAdmin({
+            adminEmail: admin.email,
+            employeeFirstName: leave.user.firstName,
+            employeeLastName: leave.user.lastName,
+            department: leave.user.department,
+            type: leave.type,
+            startDate: leave.startDate,
+            endDate: leave.endDate,
+            reason: leave.reason,
+        })));
+        return leave;
     }
     findAll(userId, status) {
         return this.prisma.leave.findMany({
@@ -56,11 +74,22 @@ let LeaveService = class LeaveService {
         if (leave.status !== client_1.LeaveStatus.PENDING) {
             throw new common_1.BadRequestException('Cette demande a déjà été traitée');
         }
-        return this.prisma.leave.update({
+        const updated = await this.prisma.leave.update({
             where: { id: leaveId },
             data: { status: dto.status, reviewerId, reviewedAt: new Date() },
-            include: { user: { select: { firstName: true, lastName: true } } },
+            include: {
+                user: { select: { firstName: true, lastName: true, email: true } },
+            },
         });
+        await this.mail.sendLeaveReviewToEmployee({
+            to: updated.user.email,
+            firstName: updated.user.firstName,
+            type: updated.type,
+            startDate: updated.startDate,
+            endDate: updated.endDate,
+            status: updated.status,
+        });
+        return updated;
     }
     async cancel(leaveId, userId) {
         const leave = await this.prisma.leave.findFirst({
@@ -87,6 +116,7 @@ let LeaveService = class LeaveService {
 exports.LeaveService = LeaveService;
 exports.LeaveService = LeaveService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        mail_service_1.MailService])
 ], LeaveService);
 //# sourceMappingURL=leave.service.js.map

@@ -79,6 +79,7 @@ export declare class LeaveController {
         id: string;
     }, dto: ReviewLeaveDto): Promise<{
         user: {
+            email: string;
             firstName: string;
             lastName: string;
         };

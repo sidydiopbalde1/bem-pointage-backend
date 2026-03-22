@@ -10,6 +10,7 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
 import { LeaveModule } from './modules/leave/leave.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -25,5 +26,6 @@ import { ReportsModule } from './modules/reports/reports.module';
     DashboardModule,
     ReportsModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}

@@ -1,9 +1,11 @@
 import { LeaveStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import { CreateLeaveDto, ReviewLeaveDto } from './dto/leave.dto';
 export declare class LeaveService {
     private readonly prisma;
-    constructor(prisma: PrismaService);
+    private readonly mail;
+    constructor(prisma: PrismaService, mail: MailService);
     create(userId: string, dto: CreateLeaveDto): Promise<{
         user: {
             firstName: string;
@@ -44,6 +46,7 @@ export declare class LeaveService {
     })[]>;
     review(leaveId: string, reviewerId: string, dto: ReviewLeaveDto): Promise<{
         user: {
+            email: string;
             firstName: string;
             lastName: string;
         };

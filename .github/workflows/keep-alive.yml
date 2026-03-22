@@ -1,0 +1,32 @@
+name: Keep Alive
+
+on:
+  schedule:
+    # Toutes les 14 minutes (Render endort après 15 min d'inactivité)
+    - cron: '*/14 * * * *'
+  workflow_dispatch: # Déclenchement manuel possible
+
+jobs:
+  ping:
+    name: Ping API & Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping API
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ secrets.RENDER_API_URL }}/health")
+          echo "API status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "⚠️ API responded with $STATUS"
+          else
+            echo "✅ API is awake"
+          fi
+
+      - name: Ping Frontend
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ secrets.RENDER_FRONTEND_URL }}")
+          echo "Frontend status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "⚠️ Frontend responded with $STATUS"
+          else
+            echo "✅ Frontend is awake"
+          fi

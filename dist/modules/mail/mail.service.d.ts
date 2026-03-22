@@ -36,6 +36,24 @@ export declare class MailService {
             status: string;
         }>;
     }): Promise<void>;
+    sendLeaveRequestToAdmin(opts: {
+        adminEmail: string;
+        employeeFirstName: string;
+        employeeLastName: string;
+        department: string | null;
+        type: string;
+        startDate: Date;
+        endDate: Date;
+        reason: string;
+    }): Promise<void>;
+    sendLeaveReviewToEmployee(opts: {
+        to: string;
+        firstName: string;
+        type: string;
+        startDate: Date;
+        endDate: Date;
+        status: 'APPROVED' | 'REJECTED';
+    }): Promise<void>;
     private statCard;
     private send;
 }
