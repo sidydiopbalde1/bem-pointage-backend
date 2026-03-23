@@ -8,8 +8,6 @@ import {
   Param,
   Query,
   UseGuards,
-  ParseIntPipe,
-  Optional,
 } from '@nestjs/common';
 import { HolidaysService } from './holidays.service';
 import { CreateHolidayDto, UpdateHolidayDto } from './dto/holiday.dto';

@@ -9,29 +9,29 @@ export declare class AbsencesController {
         id: string;
     }, dto: JustifyAbsenceDto, file?: Express.Multer.File): Promise<{
         date: Date;
+        justification: string | null;
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        reviewedAt: Date | null;
-        justification: string | null;
         justified: boolean;
         documentPath: string | null;
         reviewedBy: string | null;
+        reviewedAt: Date | null;
     }>;
     findMine(user: {
         id: string;
     }): import("@prisma/client").Prisma.PrismaPromise<{
         date: Date;
+        justification: string | null;
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        reviewedAt: Date | null;
-        justification: string | null;
         justified: boolean;
         documentPath: string | null;
         reviewedBy: string | null;
+        reviewedAt: Date | null;
     }[]>;
     findAll(userId?: string, justified?: string): import("@prisma/client").Prisma.PrismaPromise<({
         user: {
@@ -41,15 +41,15 @@ export declare class AbsencesController {
         };
     } & {
         date: Date;
+        justification: string | null;
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        reviewedAt: Date | null;
-        justification: string | null;
         justified: boolean;
         documentPath: string | null;
         reviewedBy: string | null;
+        reviewedAt: Date | null;
     })[]>;
     review(id: string, reviewer: {
         id: string;
@@ -60,14 +60,14 @@ export declare class AbsencesController {
         };
     } & {
         date: Date;
+        justification: string | null;
         id: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        reviewedAt: Date | null;
-        justification: string | null;
         justified: boolean;
         documentPath: string | null;
         reviewedBy: string | null;
+        reviewedAt: Date | null;
     }>;
 }

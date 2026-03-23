@@ -1,4 +1,4 @@
-import { IsDateString, IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsDateString, IsString, IsNotEmpty } from 'class-validator';
 
 export class JustifyAbsenceDto {
   @IsDateString()
