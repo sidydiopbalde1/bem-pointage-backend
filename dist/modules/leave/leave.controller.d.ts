@@ -7,12 +7,12 @@ export declare class LeaveController {
     create(user: {
         id: string;
     }, dto: CreateLeaveDto): Promise<{
+        workingDays: number;
         user: {
             firstName: string;
             lastName: string;
             department: string | null;
         };
-    } & {
         type: import("@prisma/client").$Enums.LeaveType;
         id: string;
         createdAt: Date;

@@ -10,6 +10,8 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
 import { LeaveModule } from './modules/leave/leave.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { HolidaysModule } from './modules/holidays/holidays.module';
+import { AbsencesModule } from './modules/absences/absences.module';
 import { HealthController } from './health/health.controller';
 
 @Module({
@@ -23,6 +25,8 @@ import { HealthController } from './health/health.controller';
     QrCodeModule,
     AttendanceModule,
     LeaveModule,
+    HolidaysModule,
+    AbsencesModule,
     DashboardModule,
     ReportsModule,
   ],

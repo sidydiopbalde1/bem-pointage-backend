@@ -21,6 +21,7 @@ const USER_SELECT = {
   isActive: true,
   workStartTime: true,
   workEndTime: true,
+  workDays: true,
   createdAt: true,
 };
 

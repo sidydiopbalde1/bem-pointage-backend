@@ -19,6 +19,8 @@ const attendance_module_1 = require("./modules/attendance/attendance.module");
 const leave_module_1 = require("./modules/leave/leave.module");
 const dashboard_module_1 = require("./modules/dashboard/dashboard.module");
 const reports_module_1 = require("./modules/reports/reports.module");
+const holidays_module_1 = require("./modules/holidays/holidays.module");
+const absences_module_1 = require("./modules/absences/absences.module");
 const health_controller_1 = require("./health/health.controller");
 let AppModule = class AppModule {
 };
@@ -35,6 +37,8 @@ exports.AppModule = AppModule = __decorate([
             qr_code_module_1.QrCodeModule,
             attendance_module_1.AttendanceModule,
             leave_module_1.LeaveModule,
+            holidays_module_1.HolidaysModule,
+            absences_module_1.AbsencesModule,
             dashboard_module_1.DashboardModule,
             reports_module_1.ReportsModule,
         ],

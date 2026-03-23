@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateUserDto = exports.CreateUserDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const WORK_DAYS_REGEX = /^([0-6],)*[0-6]$/;
 class CreateUserDto {
     firstName;
     lastName;
@@ -23,6 +24,7 @@ class CreateUserDto {
     phone;
     workStartTime;
     workEndTime;
+    workDays;
 }
 exports.CreateUserDto = CreateUserDto;
 __decorate([
@@ -91,6 +93,13 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "workEndTime", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '1,2,3,4,5', description: 'Jours travaillés (0=Dim,1=Lun,...,6=Sam)' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(WORK_DAYS_REGEX, { message: 'workDays doit être une liste de chiffres 0-6 séparés par des virgules' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "workDays", void 0);
 class UpdateUserDto {
     firstName;
     lastName;
@@ -99,6 +108,7 @@ class UpdateUserDto {
     position;
     workStartTime;
     workEndTime;
+    workDays;
 }
 exports.UpdateUserDto = UpdateUserDto;
 __decorate([
@@ -149,4 +159,11 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "workEndTime", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '1,2,3,4,5', description: 'Jours travaillés (0=Dim,1=Lun,...,6=Sam)' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(WORK_DAYS_REGEX, { message: 'workDays doit être une liste de chiffres 0-6 séparés par des virgules' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "workDays", void 0);
 //# sourceMappingURL=user.dto.js.map

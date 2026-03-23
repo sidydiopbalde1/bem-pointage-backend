@@ -14,23 +14,47 @@ const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../../prisma/prisma.service");
 const mail_service_1 = require("../mail/mail.service");
+const holidays_service_1 = require("../holidays/holidays.service");
 let LeaveService = class LeaveService {
     prisma;
     mail;
-    constructor(prisma, mail) {
+    holidays;
+    constructor(prisma, mail, holidays) {
         this.prisma = prisma;
         this.mail = mail;
+        this.holidays = holidays;
+    }
+    async countWorkingDays(start, end) {
+        const holidayDates = await this.holidays.getHolidayDatesInRange(start, end);
+        const holidayStrings = new Set(holidayDates.map((d) => d.toISOString().slice(0, 10)));
+        let count = 0;
+        const current = new Date(start);
+        while (current <= end) {
+            const day = current.getDay();
+            const iso = current.toISOString().slice(0, 10);
+            if (day !== 0 && day !== 6 && !holidayStrings.has(iso)) {
+                count++;
+            }
+            current.setDate(current.getDate() + 1);
+        }
+        return count;
     }
     async create(userId, dto) {
         if (new Date(dto.startDate) > new Date(dto.endDate)) {
             throw new common_1.BadRequestException('La date de début doit être avant la date de fin');
         }
+        const startDate = new Date(dto.startDate);
+        const endDate = new Date(dto.endDate);
+        const workingDays = await this.countWorkingDays(startDate, endDate);
+        if (workingDays === 0) {
+            throw new common_1.BadRequestException('La période sélectionnée ne contient aucun jour ouvrable (weekends/jours fériés)');
+        }
         const leave = await this.prisma.leave.create({
             data: {
                 userId,
                 type: dto.type,
-                startDate: new Date(dto.startDate),
-                endDate: new Date(dto.endDate),
+                startDate,
+                endDate,
                 reason: dto.reason,
             },
             include: {
@@ -51,7 +75,7 @@ let LeaveService = class LeaveService {
             endDate: leave.endDate,
             reason: leave.reason,
         })));
-        return leave;
+        return { ...leave, workingDays };
     }
     findAll(userId, status) {
         return this.prisma.leave.findMany({
@@ -117,6 +141,7 @@ exports.LeaveService = LeaveService;
 exports.LeaveService = LeaveService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        mail_service_1.MailService])
+        mail_service_1.MailService,
+        holidays_service_1.HolidaysService])
 ], LeaveService);
 //# sourceMappingURL=leave.service.js.map

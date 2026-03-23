@@ -10,11 +10,13 @@ exports.LeaveModule = void 0;
 const common_1 = require("@nestjs/common");
 const leave_service_1 = require("./leave.service");
 const leave_controller_1 = require("./leave.controller");
+const holidays_module_1 = require("../holidays/holidays.module");
 let LeaveModule = class LeaveModule {
 };
 exports.LeaveModule = LeaveModule;
 exports.LeaveModule = LeaveModule = __decorate([
     (0, common_1.Module)({
+        imports: [holidays_module_1.HolidaysModule],
         providers: [leave_service_1.LeaveService],
         controllers: [leave_controller_1.LeaveController],
     })

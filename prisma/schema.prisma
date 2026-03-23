@@ -51,6 +51,7 @@ model User {
   isActive            Boolean   @default(true)
   workStartTime       String    @default("09:00")
   workEndTime         String    @default("17:00")
+  workDays            String    @default("1,2,3,4,5")
   passwordResetToken  String?   @unique
   passwordResetExpiry DateTime?
   createdAt           DateTime  @default(now())
@@ -58,6 +59,7 @@ model User {
 
   attendances Attendance[]
   leaves      Leave[]
+  absences    Absence[]
   qrCode      QrCode?
 
   @@map("users")
@@ -119,4 +121,33 @@ model TokenBlacklist {
 
   @@index([expiresAt])
   @@map("token_blacklist")
+}
+
+model PublicHoliday {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([date])
+  @@map("public_holidays")
+}
+
+model Absence {
+  id            String    @id @default(cuid())
+  userId        String
+  date          DateTime  @db.Date
+  justified     Boolean   @default(false)
+  justification String?
+  documentPath  String?
+  reviewedBy    String?
+  reviewedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("absences")
 }

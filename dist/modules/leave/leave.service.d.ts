@@ -1,18 +1,21 @@
 import { LeaveStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
+import { HolidaysService } from '../holidays/holidays.service';
 import { CreateLeaveDto, ReviewLeaveDto } from './dto/leave.dto';
 export declare class LeaveService {
     private readonly prisma;
     private readonly mail;
-    constructor(prisma: PrismaService, mail: MailService);
+    private readonly holidays;
+    constructor(prisma: PrismaService, mail: MailService, holidays: HolidaysService);
+    private countWorkingDays;
     create(userId: string, dto: CreateLeaveDto): Promise<{
+        workingDays: number;
         user: {
             firstName: string;
             lastName: string;
             department: string | null;
         };
-    } & {
         type: import("@prisma/client").$Enums.LeaveType;
         id: string;
         createdAt: Date;

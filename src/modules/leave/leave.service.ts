@@ -6,6 +6,7 @@ import {
 import { LeaveStatus, Role } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
+import { HolidaysService } from '../holidays/holidays.service';
 import { CreateLeaveDto, ReviewLeaveDto } from './dto/leave.dto';
 
 @Injectable()
@@ -13,7 +14,28 @@ export class LeaveService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly mail: MailService,
+    private readonly holidays: HolidaysService,
   ) {}
+
+  /** Calcule le nombre de jours ouvrables entre deux dates (sans weekends ni jours fériés) */
+  private async countWorkingDays(start: Date, end: Date): Promise<number> {
+    const holidayDates = await this.holidays.getHolidayDatesInRange(start, end);
+    const holidayStrings = new Set(
+      holidayDates.map((d) => d.toISOString().slice(0, 10)),
+    );
+
+    let count = 0;
+    const current = new Date(start);
+    while (current <= end) {
+      const day = current.getDay(); // 0=dim, 6=sam
+      const iso = current.toISOString().slice(0, 10);
+      if (day !== 0 && day !== 6 && !holidayStrings.has(iso)) {
+        count++;
+      }
+      current.setDate(current.getDate() + 1);
+    }
+    return count;
+  }
 
   async create(userId: string, dto: CreateLeaveDto) {
     if (new Date(dto.startDate) > new Date(dto.endDate)) {
@@ -22,12 +44,22 @@ export class LeaveService {
       );
     }
 
+    const startDate = new Date(dto.startDate);
+    const endDate = new Date(dto.endDate);
+    const workingDays = await this.countWorkingDays(startDate, endDate);
+
+    if (workingDays === 0) {
+      throw new BadRequestException(
+        'La période sélectionnée ne contient aucun jour ouvrable (weekends/jours fériés)',
+      );
+    }
+
     const leave = await this.prisma.leave.create({
       data: {
         userId,
         type: dto.type,
-        startDate: new Date(dto.startDate),
-        endDate: new Date(dto.endDate),
+        startDate,
+        endDate,
         reason: dto.reason,
       },
       include: {
@@ -56,7 +88,7 @@ export class LeaveService {
       ),
     );
 
-    return leave;
+    return { ...leave, workingDays };
   }
 
   findAll(userId?: string, status?: LeaveStatus) {

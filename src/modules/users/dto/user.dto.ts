@@ -7,6 +7,10 @@ import {
   Matches,
   MinLength,
 } from 'class-validator';
+
+// workDays : chaîne de chiffres séparés par des virgules, ex: "1,2,3,4,5"
+// 0=Dim, 1=Lun, 2=Mar, 3=Mer, 4=Jeu, 5=Ven, 6=Sam
+const WORK_DAYS_REGEX = /^([0-6],)*[0-6]$/;
 import type { Role } from '@prisma/client';
 
 export class CreateUserDto {
@@ -65,6 +69,12 @@ export class CreateUserDto {
   })
   @IsOptional()
   workEndTime?: string;
+
+  @ApiPropertyOptional({ example: '1,2,3,4,5', description: 'Jours travaillés (0=Dim,1=Lun,...,6=Sam)' })
+  @IsString()
+  @Matches(WORK_DAYS_REGEX, { message: 'workDays doit être une liste de chiffres 0-6 séparés par des virgules' })
+  @IsOptional()
+  workDays?: string;
 }
 
 export class UpdateUserDto {
@@ -108,4 +118,10 @@ export class UpdateUserDto {
   })
   @IsOptional()
   workEndTime?: string;
+
+  @ApiPropertyOptional({ example: '1,2,3,4,5', description: 'Jours travaillés (0=Dim,1=Lun,...,6=Sam)' })
+  @IsString()
+  @Matches(WORK_DAYS_REGEX, { message: 'workDays doit être une liste de chiffres 0-6 séparés par des virgules' })
+  @IsOptional()
+  workDays?: string;
 }
