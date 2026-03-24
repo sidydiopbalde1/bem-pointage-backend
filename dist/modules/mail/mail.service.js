@@ -57,10 +57,13 @@ let MailService = MailService_1 = class MailService {
         this.from =
             this.config.get('MAIL_FROM') ??
                 'Pointage App <noreply@pointage.com>';
+        const port = Number(this.config.get('MAIL_PORT')) || 587;
+        const secure = port === 465;
         this.transporter = nodemailer.createTransport({
             host: this.config.get('MAIL_HOST'),
-            port: this.config.get('MAIL_PORT') ?? 587,
-            secure: this.config.get('MAIL_PORT') === 465,
+            port,
+            secure,
+            requireTLS: !secure,
             auth: {
                 user: this.config.get('MAIL_USER'),
                 pass: this.config.get('MAIL_PASS'),
@@ -285,10 +288,11 @@ let MailService = MailService_1 = class MailService {
     }
     async send(opts) {
         try {
-            await this.transporter.sendMail({ from: this.from, ...opts });
+            const info = await this.transporter.sendMail({ from: this.from, ...opts });
+            this.logger.log(`Email sent to ${opts.to} — messageId: ${info.messageId}`);
         }
         catch (error) {
-            this.logger.error(`Failed to send email to ${opts.to}: ${error.message}`);
+            this.logger.error(`Failed to send email to ${opts.to}: ${error.message}`, error.stack);
         }
     }
 };

@@ -14,10 +14,14 @@ export class MailService {
       this.config.get<string>('MAIL_FROM') ??
       'Pointage App <noreply@pointage.com>';
 
+    const port = Number(this.config.get('MAIL_PORT')) || 587;
+    const secure = port === 465;
+
     this.transporter = nodemailer.createTransport({
       host: this.config.get<string>('MAIL_HOST'),
-      port: this.config.get<number>('MAIL_PORT') ?? 587,
-      secure: this.config.get<number>('MAIL_PORT') === 465,
+      port,
+      secure,
+      requireTLS: !secure, // STARTTLS pour les ports 587/2525
       auth: {
         user: this.config.get<string>('MAIL_USER'),
         pass: this.config.get<string>('MAIL_PASS'),
@@ -304,10 +308,12 @@ export class MailService {
 
   private async send(opts: { to: string; subject: string; html: string }) {
     try {
-      await this.transporter.sendMail({ from: this.from, ...opts });
+      const info = await this.transporter.sendMail({ from: this.from, ...opts });
+      this.logger.log(`Email sent to ${opts.to} — messageId: ${info.messageId}`);
     } catch (error) {
       this.logger.error(
         `Failed to send email to ${opts.to}: ${(error as Error).message}`,
+        (error as Error).stack,
       );
     }
   }
