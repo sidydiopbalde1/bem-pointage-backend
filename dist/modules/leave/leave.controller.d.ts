@@ -13,14 +13,14 @@ export declare class LeaveController {
             lastName: string;
             department: string | null;
         };
-        type: import("@prisma/client").$Enums.LeaveType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
+        type: import("@prisma/client").$Enums.LeaveType;
+        status: import("@prisma/client").$Enums.LeaveStatus;
         startDate: Date;
         endDate: Date;
-        status: import("@prisma/client").$Enums.LeaveStatus;
         reason: string;
         reviewerId: string | null;
         reviewedAt: Date | null;
@@ -34,14 +34,14 @@ export declare class LeaveController {
             department: string | null;
         };
     } & {
-        type: import("@prisma/client").$Enums.LeaveType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
+        type: import("@prisma/client").$Enums.LeaveType;
+        status: import("@prisma/client").$Enums.LeaveStatus;
         startDate: Date;
         endDate: Date;
-        status: import("@prisma/client").$Enums.LeaveStatus;
         reason: string;
         reviewerId: string | null;
         reviewedAt: Date | null;
@@ -63,14 +63,14 @@ export declare class LeaveController {
             department: string | null;
         };
     } & {
-        type: import("@prisma/client").$Enums.LeaveType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
+        type: import("@prisma/client").$Enums.LeaveType;
+        status: import("@prisma/client").$Enums.LeaveStatus;
         startDate: Date;
         endDate: Date;
-        status: import("@prisma/client").$Enums.LeaveStatus;
         reason: string;
         reviewerId: string | null;
         reviewedAt: Date | null;
@@ -84,14 +84,14 @@ export declare class LeaveController {
             lastName: string;
         };
     } & {
-        type: import("@prisma/client").$Enums.LeaveType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
+        type: import("@prisma/client").$Enums.LeaveType;
+        status: import("@prisma/client").$Enums.LeaveStatus;
         startDate: Date;
         endDate: Date;
-        status: import("@prisma/client").$Enums.LeaveStatus;
         reason: string;
         reviewerId: string | null;
         reviewedAt: Date | null;
@@ -99,14 +99,14 @@ export declare class LeaveController {
     cancel(id: string, user: {
         id: string;
     }): Promise<{
-        type: import("@prisma/client").$Enums.LeaveType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
+        type: import("@prisma/client").$Enums.LeaveType;
+        status: import("@prisma/client").$Enums.LeaveStatus;
         startDate: Date;
         endDate: Date;
-        status: import("@prisma/client").$Enums.LeaveStatus;
         reason: string;
         reviewerId: string | null;
         reviewedAt: Date | null;

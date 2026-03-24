@@ -4,8 +4,8 @@ export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     create(dto: CreateUserDto): Promise<{
-        email: string;
         id: string;
+        email: string;
         firstName: string;
         lastName: string;
         role: import("@prisma/client").$Enums.Role;
@@ -19,8 +19,8 @@ export declare class UsersController {
         createdAt: Date;
     }>;
     findAll(department?: string, includeInactive?: string): import("@prisma/client").Prisma.PrismaPromise<{
-        email: string;
         id: string;
+        email: string;
         firstName: string;
         lastName: string;
         role: import("@prisma/client").$Enums.Role;
@@ -34,11 +34,8 @@ export declare class UsersController {
         createdAt: Date;
     }[]>;
     findOne(id: string): Promise<{
-        qrCode: {
-            token: string;
-        } | null;
-        email: string;
         id: string;
+        email: string;
         firstName: string;
         lastName: string;
         role: import("@prisma/client").$Enums.Role;
@@ -50,10 +47,13 @@ export declare class UsersController {
         workEndTime: string;
         workDays: string;
         createdAt: Date;
+        qrCode: {
+            token: string;
+        } | null;
     }>;
     update(id: string, dto: UpdateUserDto): Promise<{
-        email: string;
         id: string;
+        email: string;
         firstName: string;
         lastName: string;
         role: import("@prisma/client").$Enums.Role;
@@ -67,8 +67,8 @@ export declare class UsersController {
         createdAt: Date;
     }>;
     deactivate(id: string): Promise<{
-        email: string;
         id: string;
+        email: string;
         firstName: string;
         lastName: string;
         role: import("@prisma/client").$Enums.Role;

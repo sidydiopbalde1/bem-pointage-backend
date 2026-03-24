@@ -15,15 +15,15 @@ export declare class AttendanceController {
         };
     } & {
         date: Date;
-        type: import("@prisma/client").$Enums.AttendanceType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        note: string | null;
+        type: import("@prisma/client").$Enums.AttendanceType;
         checkIn: Date;
         checkOut: Date | null;
         status: import("@prisma/client").$Enums.AttendanceStatus;
+        note: string | null;
     }>;
     checkOut(user: {
         id: string;
@@ -34,15 +34,15 @@ export declare class AttendanceController {
         };
     } & {
         date: Date;
-        type: import("@prisma/client").$Enums.AttendanceType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        note: string | null;
+        type: import("@prisma/client").$Enums.AttendanceType;
         checkIn: Date;
         checkOut: Date | null;
         status: import("@prisma/client").$Enums.AttendanceStatus;
+        note: string | null;
     }>;
     scanQrCode(token: string): Promise<{
         user: {
@@ -51,15 +51,15 @@ export declare class AttendanceController {
         };
     } & {
         date: Date;
-        type: import("@prisma/client").$Enums.AttendanceType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        note: string | null;
+        type: import("@prisma/client").$Enums.AttendanceType;
         checkIn: Date;
         checkOut: Date | null;
         status: import("@prisma/client").$Enums.AttendanceStatus;
+        note: string | null;
     }>;
     createManual(dto: ManualAttendanceDto): Promise<{
         user: {
@@ -68,29 +68,29 @@ export declare class AttendanceController {
         };
     } & {
         date: Date;
-        type: import("@prisma/client").$Enums.AttendanceType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        note: string | null;
+        type: import("@prisma/client").$Enums.AttendanceType;
         checkIn: Date;
         checkOut: Date | null;
         status: import("@prisma/client").$Enums.AttendanceStatus;
+        note: string | null;
     }>;
     findMine(user: {
         id: string;
     }): import("@prisma/client").Prisma.PrismaPromise<{
         date: Date;
-        type: import("@prisma/client").$Enums.AttendanceType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        note: string | null;
+        type: import("@prisma/client").$Enums.AttendanceType;
         checkIn: Date;
         checkOut: Date | null;
         status: import("@prisma/client").$Enums.AttendanceStatus;
+        note: string | null;
     }[]>;
     findAll(filter: AttendanceFilterDto): import("@prisma/client").Prisma.PrismaPromise<({
         user: {
@@ -101,15 +101,15 @@ export declare class AttendanceController {
         };
     } & {
         date: Date;
-        type: import("@prisma/client").$Enums.AttendanceType;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        note: string | null;
+        type: import("@prisma/client").$Enums.AttendanceType;
         checkIn: Date;
         checkOut: Date | null;
         status: import("@prisma/client").$Enums.AttendanceStatus;
+        note: string | null;
     })[]>;
     getTodayStats(): Promise<{
         total: number;

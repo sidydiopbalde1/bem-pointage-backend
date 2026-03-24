@@ -308,7 +308,7 @@ export class MailService {
 
   private async send(opts: { to: string; subject: string; html: string }) {
     try {
-      const info = await this.transporter.sendMail({ from: this.from, ...opts });
+      const info = await this.transporter.sendMail({ from: this.from, ...opts }) as { messageId: string };
       this.logger.log(`Email sent to ${opts.to} — messageId: ${info.messageId}`);
     } catch (error) {
       this.logger.error(
